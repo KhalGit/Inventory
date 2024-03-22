@@ -64,6 +64,3 @@ CREATE TABLE `transaction_details` (
 
 
 /*!40101 SET character_set_client = @saved_cs_client */;
-
-
--- Dump completed on 2016-09-24 21:50:59
