@@ -12,26 +12,28 @@ CREATE TABLE `inventory` (
 DROP TABLE IF EXISTS `shelf`;
 CREATE TABLE `shelf` (
   `id` bigint NOT NULL,
-  `inventoryId` int,
+  `barcode` varchar(45),
+  `inventoryId` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`inventoryId`) REFERENCES inventory(`id`)
+  FOREIGN KEY (`inventoryId`) REFERENCES inventory (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
-  `barcode` bigint NOT NULL,
+  `id` bigint NOT NULL,
+  `barcode` varchar(45),
   `description` varchar(100) NOT NULL,
   `price` bigint NOT NULL,
-  PRIMARY KEY (`barcode`)
+  `measure` enum('KILOS', 'PIECES'),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction` (
   `id` bigint NOT NULL,
-  `date` bigint NOT NULL,
+  `date` date NOT NULL,
   `import_export` enum('import', 'export'),
   `totalPrice` bigint NOT NULL,
-  `price` bigint NOT NULL,
   `description` varchar(100) NOT NULL,
   `receiver` varchar(45) NOT NULL,
   `deliver` varchar(45) NOT NULL,
@@ -41,26 +43,35 @@ CREATE TABLE `transaction` (
 DROP TABLE IF EXISTS `stock`;
 CREATE TABLE `stock` (
 	`id` bigint NOT NULL,
-    `shelfId` bigint NOT NULL,
-    `productBarcode` bigint NOT NULL,
-    `upToDate` DATE NOT NULL,
+    `shelf_id` bigint NOT NULL,
+    `product_id` bigint NOT NULL,
+    `up_to_date` DATE NOT NULL,
     `quantity` bigint NOT NULL,
 	PRIMARY KEY (`id`),
-	FOREIGN KEY (`productBarcode`) REFERENCES product(`barcode`),
-	FOREIGN KEY (`shelfId`) REFERENCES shelf(`id`)
+	FOREIGN KEY (`product_id`) REFERENCES product(`id`),
+	FOREIGN KEY (`shelf_id`) REFERENCES shelf(`id`)
+) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `stock_history`;
+CREATE TABLE `stock` (
+	`id` bigint NOT NULL,
+    `stock_id` bigint NOT NULL,
+    `quantity` bigint NOT NULL,
+    `dates` DATE NOT NULL,
+	PRIMARY KEY (`id`),
+	FOREIGN KEY (`stock_id`) REFERENCES stock(`id`)
 ) ENGINE=InnoDB;
 
 DROP TABLE IF EXISTS `transaction_details`;
 CREATE TABLE `transaction_details` (
 	`id` bigint NOT NULL,
-    `productBarcode` bigint NOT NULL,
+    `product_id` bigint NOT NULL,
     `quantity` bigint NOT NULL,
-    `shelfId` bigint NOT NULL,
+    `shelf_id` bigint NOT NULL,
 	PRIMARY KEY (`id`),
-	FOREIGN KEY (`productBarcode`) REFERENCES product(`barcode`),
-	FOREIGN KEY (`shelfId`) REFERENCES shelf(`id`)
+	FOREIGN KEY (`product_id`) REFERENCES product(`id`),
+	FOREIGN KEY (`shelf_id`) REFERENCES shelf(`id`)
 ) ENGINE=InnoDB;
 
 
-
-/*!40101 SET character_set_client = @saved_cs_client */;
+#/*!40101 SET character_set_client = @saved_cs_client */;#
